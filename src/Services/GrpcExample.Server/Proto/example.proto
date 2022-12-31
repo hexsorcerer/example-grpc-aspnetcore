@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcExample";
+
+package example;
+
+service GrpcExample {
+  rpc GetGrpcExampleResponse (GrpcExampleRequest) returns (GrpcExampleResponse);
+}
+
+message GrpcExampleRequest {
+  string message = 1;
+}
+
+message GrpcExampleResponse {
+  string message = 1;
+}
