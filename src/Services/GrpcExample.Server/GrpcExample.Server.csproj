@@ -10,9 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Proto\example.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.50.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Proto\example.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>
