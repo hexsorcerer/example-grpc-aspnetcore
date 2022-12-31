@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  grpcexample-server:
+    image: ${DOCKER_REGISTRY-}grpcexample-server
+    container_name: grpcexample-server
+    build:
+      context: .
+      dockerfile: Services/GrpcExample.Server/Dockerfile
+  grpcexample-client:
+    image: ${DOCKER_REGISTRY-}grpcexample-client
+    container_name: grpcexample-client
+    build:
+      context: .
+      dockerfile: Services/GrpcExample.Client/Dockerfile

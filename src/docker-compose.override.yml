@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  grpcexample-server:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8000:80"
+      - "5001:5001"
+    expose:
+      - "80"
+      - "443"
+      - "5001"
+  grpcexample-client:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8001:80"
+    expose:
+      - "80"
+      - "443"

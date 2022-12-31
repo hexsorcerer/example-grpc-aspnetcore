@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>hexsorcerer</Authors>
+    <Company>Hexsoft</Company>
+    <Version>0.1.0</Version>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!--This Condition is a workaround for docker projects causing the dotnet CLI tools to fail-->
+  <!--https://github.com/microsoft/DockerTools/issues/209#issuecomment-555745408-->
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
+    <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
+
+</Project>
