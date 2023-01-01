@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>hexsorcerer</Authors>
     <Company>Hexsoft</Company>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
