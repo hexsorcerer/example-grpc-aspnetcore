@@ -264,27 +264,27 @@ private readonly GrpcExample.GrpcExampleClient _grpcClient;
 
 And set it in your constructor:
 ```
-    public GrpcExampleClientController(
-        GrpcExample.GrpcExampleClient grpcClient,
-        ILogger<GrpcExampleClientController> logger)
-    {
-        _grpcClient = grpcClient ?? throw new ArgumentNullException(nameof(grpcClient));
-        _logger = logger;
-    }
+public GrpcExampleClientController(
+    GrpcExample.GrpcExampleClient grpcClient,
+    ILogger<GrpcExampleClientController> logger)
+{
+    _grpcClient = grpcClient ?? throw new ArgumentNullException(nameof(grpcClient));
+    _logger = logger;
+}
 ```
 
 You can now call it from your GET method:
 ```
 [HttpGet(Name = "GetGrpcExampleType")]
-    public async Task<GrpcExampleResponse> Get()
-    {
-        _logger.LogInformation("Client received a GET request");
+public async Task<GrpcExampleResponse> Get()
+{
+    _logger.LogInformation("Client received a GET request");
 
-        return await _grpcClient.GetGrpcExampleResponseAsync(new GrpcExampleRequest
-        {
-            Message = "yo this is the grpc client"
-        });
-    }
+    return await _grpcClient.GetGrpcExampleResponseAsync(new GrpcExampleRequest
+    {
+        Message = "yo this is the grpc client"
+    });
+}
 ```
 
 If you go hit this endpoint on the swagger page now, you'll see the message that
@@ -374,10 +374,10 @@ there a nuget package we can install to provide it for us? The answer is no. =(
 
 ### Using git submodules to consume proto files
 I'm sure there are numerous ways you could approch this problem, but I wasn't
-able to find anything widely accepted way online. The solution I came up with
-was to use git submodules to clone this repo inside of mine, and then you can
-access all the proto files by just referencing them from your project file.
-This actually seems to work pretty well, so here's how I did it.
+able to find any widely accepted way online. The solution I came up with was to
+use git submodules to clone this repo inside of mine, and then you can access
+all the proto files by just referencing them from your project file. This
+actually seems to work pretty well, so here's how I did it.
 ```
 mkdir -p src/BuildingBlocks
 cd src/BuildingBlocks
