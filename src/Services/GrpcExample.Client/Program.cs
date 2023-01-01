@@ -7,6 +7,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddGrpcClient<GrpcExample.GrpcExample.GrpcExampleClient>(options =>
+{
+    options.Address = new Uri("http://grpcexample-server:5001");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

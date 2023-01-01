@@ -5,18 +5,25 @@ namespace GrpcExample.Client.Controllers;
 [Route("[controller]")]
 public class GrpcExampleClientController : ControllerBase
 {
+    private readonly GrpcExample.GrpcExampleClient _grpcClient;
     private readonly ILogger<GrpcExampleClientController> _logger;
 
-    public GrpcExampleClientController(ILogger<GrpcExampleClientController> logger)
+    public GrpcExampleClientController(
+        GrpcExample.GrpcExampleClient grpcClient,
+        ILogger<GrpcExampleClientController> logger)
     {
+        _grpcClient = grpcClient ?? throw new ArgumentNullException(nameof(grpcClient));
         _logger = logger;
     }
 
     [HttpGet(Name = "GetGrpcExampleType")]
-    public async Task<string> Get()
+    public async Task<GrpcExampleResponse> Get()
     {
         _logger.LogInformation("Client received a GET request");
 
-        return await Task.FromResult("client").ConfigureAwait(false);
+        return await _grpcClient.GetGrpcExampleResponseAsync(new GrpcExampleRequest
+        {
+            Message = "yo this is the grpc client"
+        });
     }
 }
