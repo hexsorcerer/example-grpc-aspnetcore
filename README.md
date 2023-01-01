@@ -215,7 +215,7 @@ and start getting some messages going!
 
 ## Building your gRPC client in C#
 First thing we need to do is reference the proto file from the server project.
-This assumes your working in a monorepo scenario and both projects are in the
+This assumes you're working in a monorepo scenario and both projects are in the
 same repo. If you're working in a polyrepo scenario, you'll have some extra
 work to do to manage your protos that we won't be talking about in this example.
 
@@ -224,6 +224,11 @@ Referencing proto files from nuget seems to be the hard part, there's an open
 issue on it [here](https://github.com/grpc/grpc-dotnet/issues/183), which will
 lead you to [this PR](https://github.com/dotnet/aspnetcore/pull/44999) that
 seems to show a solution.
+
+There's also
+[an interesting talk from an engineer at Spotify](https://youtu.be/fMq3IpPE3TU)
+where he mentions keeping all proto files in a dedicated repo, and some of the
+benefits they see from doing so, definitely worth a watch.
 
 ### Reference the proto file from your client project file
 Add a block to your client csproj file that looks like this:
