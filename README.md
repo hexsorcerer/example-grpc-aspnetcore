@@ -518,7 +518,9 @@ it all in one place also.
 - [Google Well Known Types](https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf)
 - [Google Common Types](https://github.com/googleapis/googleapis/tree/master/google/type)
 - [Decimal Type?](https://github.com/protocolbuffers/protobuf/issues/4406)
-
+- [Enable referencing proto files in NuGet packages](https://github.com/grpc/grpc-dotnet/issues/183)
+- [gRPC JSON transcoding - msbuild includes proto dependencies](https://github.com/dotnet/aspnetcore/pull/44999)
+- 
 ### NuGet
 - [Grpc.AspNetCore](https://www.nuget.org/packages/Grpc.AspNetCore/2.50.0#readme-body-tab)
 - [Grpc.Net.ClientFactory](https://www.nuget.org/packages/Grpc.Net.ClientFactory/#readme-body-tab)
