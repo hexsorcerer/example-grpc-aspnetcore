@@ -296,3 +296,90 @@ working.
   "message": "yo this is the grpc server"
 }
 ```
+
+## Accessing the Google Well Known types
+Now that you have gRPC working, you'll naturally start crafting some messages
+with more complex data. One of the first ones I ran into was time, so how do you
+define that?
+
+Google has provided a number of additional types on top of what gRPC provides
+out of the box. There's a group of these that are known as the "Well Known"
+types, and you have these available to you immediately. Here's how you could add
+a time field to your proto file messages.
+
+First, import the type in your proto file:
+```
+import "google/protobuf/timestamp.proto";
+```
+
+Then add a field to your response message:
+```
+message GrpcExampleResponse {
+  string message = 1;
+  google.protobuf.Timestamp modified = 2;
+}
+```
+
+Back in your server implementation, you can set this new field like this:
+```
+return await Task.FromResult(new GrpcExampleResponse
+{
+    Message = "yo this is the grpc server",
+    Modified = Timestamp.FromDateTime(DateTime.UtcNow)
+}).ConfigureAwait(false);
+```
+Now when you hit your GET endpoint in swagger, you'll see the time data
+in the response:
+```
+{
+  "message": "yo this is the grpc server",
+  "modified": {
+    "seconds": 1672535649,
+    "nanos": 401316300
+  }
+}
+```
+If you needed to convert this back into a standard .NET DateTime, you can do
+this:
+```
+var time = response.Modified.ToDateTime();
+```
+
+There's quite a bit more available to you here, highly suggested to check out
+these resources for more info:
+
+[Well Known Types proto files](https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf)
+
+[Well Known Types documentation](https://developers.google.com/protocol-buffers/docs/reference/csharp/namespace/google/protobuf/well-known-types)
+
+## Accessing the Google Common types
+Eventually you'll probably come across a type that you need that isn't available
+with anything we've seen yet. The one that did it for me was Money. There is no
+native decimal type available as of now, and
+[the discussion](https://github.com/protocolbuffers/protobuf/issues/4406) on
+the topic has been going for almost 5 years now, so I don't know if I'd expect
+it anytime soon. There's also nothing in the well known types for storing
+money values. So what can we do?
+
+Well, there's a couple of options. Theres
+[an excellent article](https://visualrecode.com/blog/csharp-decimals-in-grpc/)
+on implementing this yourself, and you could do that. But Google has actually
+already done this for their own internal use, and they've made that work
+available [here](https://github.com/googleapis/googleapis/tree/master/google/type),
+so why not make use of it?
+
+Unfortunately, you do "not" have these immediately available, you gotta do some
+work. The first problem is how do you get the proto files in your project? Is
+there a nuget package we can install to provide it for us? The answer is no. =(
+
+### Using git submodules to consume proto files
+I'm sure there are numerous ways you could approch this problem, but I wasn't
+able to find anything widely accepted way online. The solution I came up with
+was to use git submodules to clone this repo inside of mine, and then you can
+access all the proto files by just referencing them from your project file.
+This actually seems to work pretty well, so here's how I did it.
+```
+mkdir -p src/BuildingBlocks
+cd src/BuildingBlocks
+git submodule add https://github.com/googleapis/googleapis.git
+```

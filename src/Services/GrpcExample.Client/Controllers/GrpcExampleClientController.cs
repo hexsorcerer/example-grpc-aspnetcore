@@ -21,9 +21,14 @@ public class GrpcExampleClientController : ControllerBase
     {
         _logger.LogInformation("Client received a GET request");
 
-        return await _grpcClient.GetGrpcExampleResponseAsync(new GrpcExampleRequest
+        var response = await _grpcClient.GetGrpcExampleResponseAsync(new GrpcExampleRequest
         {
             Message = "yo this is the grpc client"
         });
+
+        // just an example to show that you can easily do this
+        _ = response.Modified.ToDateTime();
+
+        return response;
     }
 }

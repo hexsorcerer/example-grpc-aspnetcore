@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
 namespace GrpcExample.Server.Grpc;
@@ -10,7 +11,8 @@ public class GrpcExampleService : GrpcExample.GrpcExampleBase
     {
         return await Task.FromResult(new GrpcExampleResponse
         {
-            Message = "yo this is the grpc server"
+            Message = "yo this is the grpc server",
+            Modified = Timestamp.FromDateTime(DateTime.UtcNow)
         }).ConfigureAwait(false);
     }
 }
