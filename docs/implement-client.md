@@ -35,6 +35,10 @@ builder.Services.AddGrpcClient<GrpcExample.GrpcExample.GrpcExampleClient>(option
     options.Address = new Uri("http://grpcexample-server:5001");
 });
 ```
+The ```grpcexample-server``` name in the URL comes from the container name we
+configured in the docker-compose file. Connecting in this way keeps everything
+in docker, and avoids issues you might encounter connecting from docker to
+localhost.
 
 This will make a ```GrpcExampleClient``` available to all your services through
 dependency injection, and it will be configured to connect to the specified URL.
