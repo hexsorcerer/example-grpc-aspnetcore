@@ -520,7 +520,7 @@ it all in one place also.
 - [Decimal Type?](https://github.com/protocolbuffers/protobuf/issues/4406)
 - [Enable referencing proto files in NuGet packages](https://github.com/grpc/grpc-dotnet/issues/183)
 - [gRPC JSON transcoding - msbuild includes proto dependencies](https://github.com/dotnet/aspnetcore/pull/44999)
-- 
+
 ### NuGet
 - [Grpc.AspNetCore](https://www.nuget.org/packages/Grpc.AspNetCore/2.50.0#readme-body-tab)
 - [Grpc.Net.ClientFactory](https://www.nuget.org/packages/Grpc.Net.ClientFactory/#readme-body-tab)
