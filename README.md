@@ -437,6 +437,18 @@ message GrpcExampleResponse {
 
 Back in your server implementation, you can set an amount of about three fitty
 like this:
+
+Add a scaling factor to the service:
+```
+private const decimal NanoFactor = 1_000_000_000;
+```
+Convert your decimal value to units and nanos:
+```
+const decimal value = 3.50m;
+var units = decimal.ToInt64(value);
+var nanos = decimal.ToInt32((value - units) * NanoFactor);
+```
+Now you can use these values to build a money object to send over gRPC:
 ```
 return await Task.FromResult(new GrpcExampleResponse
 {
@@ -445,8 +457,8 @@ return await Task.FromResult(new GrpcExampleResponse
     Amount = new Money
     {
         CurrencyCode = "USD",
-        Units = 3,
-        Nanos = 500_000_000
+        Units = units,
+        Nanos = nanos
     }
 }).ConfigureAwait(false);
 ```
@@ -515,6 +527,10 @@ it all in one place also.
 - [gRPC services with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/grpc/aspnetcore?view=aspnetcore-6.0&tabs=visual-studio)
 
 ### Google
+- [Overview](https://developers.google.com/protocol-buffers/docs/overview)
+- [proto3](https://developers.google.com/protocol-buffers/docs/proto3)
+- [proto style guide](https://developers.google.com/protocol-buffers/docs/style)
+- [C# Tutorial](https://developers.google.com/protocol-buffers/docs/csharptutorial)
 - [Google.Protobuf.WellKnownTypes](https://developers.google.com/protocol-buffers/docs/reference/csharp/namespace/google/protobuf/well-known-types)
 - [Protocol Buffers/gRPC Codegen Integration Into .NET Build](https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md)
 
