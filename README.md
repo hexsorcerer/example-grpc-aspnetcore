@@ -39,7 +39,7 @@ In addition to the 2 packages that all gRPC projects need, you'll also need this
 
 - [Grpc.AspNetCore.Server.ClientFactory](https://www.nuget.org/packages/Grpc.AspNetCore.Server.ClientFactory):
 gives you the ```AddGrpc``` extension method on ```IServiceCollection```,
-and the ```MapGrpcService``` extenion method on ```IEndpointRouteBuilder```
+and the ```MapGrpcService``` extension method on ```IEndpointRouteBuilder```
 
 ### gRPC client nuget package
 In addition to the 2 packages that all gRPC projects need, you'll also need this:
