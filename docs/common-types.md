@@ -81,7 +81,7 @@ message GrpcExampleResponse {
 }
 ```
 
-Back in your server implementation, you can set an amount of about three fitty
+Back in your server implementation, you can set an amount of about tree fitty
 like this:
 
 Add a scaling factor to the service:
