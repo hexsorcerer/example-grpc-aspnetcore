@@ -5,6 +5,7 @@ option csharp_namespace = "GrpcExample";
 package example;
 
 import "google/protobuf/timestamp.proto";
+import "google/type/money.proto";
 
 service GrpcExample {
   rpc GetGrpcExampleResponse (GrpcExampleRequest) returns (GrpcExampleResponse);
@@ -17,4 +18,5 @@ message GrpcExampleRequest {
 message GrpcExampleResponse {
   string message = 1;
   google.protobuf.Timestamp modified = 2;
+  google.type.Money amount = 3;
 }

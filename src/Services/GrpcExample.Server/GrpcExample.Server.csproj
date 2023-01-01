@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Proto\example.proto" GrpcServices="Server" />
+    <Protobuf Include="Proto\example.proto" GrpcServices="Server" AdditionalImportDirs="..\..\BuildingBlocks\googleapis" />
+    <Protobuf Include="..\..\BuildingBlocks\googleapis\google\type\money.proto" />
   </ItemGroup>
 
 </Project>

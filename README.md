@@ -383,3 +383,145 @@ mkdir -p src/BuildingBlocks
 cd src/BuildingBlocks
 git submodule add https://github.com/googleapis/googleapis.git
 ```
+This will clone the googleapis repo into a directory in your project, but will
+not track anything in that directory.
+
+Now we can reference the money.proto from our projects:
+
+The server:
+```
+<ItemGroup>
+  <Protobuf Include="Proto\example.proto" GrpcServices="Server" AdditionalImportDirs="..\..\..\BuildingBlocks\googleapis" />
+  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" ProtoRoot="..\..\..\BuildingBlocks\googleapis\google\type" />
+</ItemGroup>
+```
+
+The client:
+```
+<ItemGroup>
+  <Protobuf Include="../GrpcExample.Server/Proto/example.proto" GrpcServices="Client" AdditionalImportDirs="..\..\..\BuildingBlocks\googleapis" />
+  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" ProtoRoot="..\..\..\BuildingBlocks\googleapis\google\type" />
+</ItemGroup>
+```
+
+A couple of important things going on here that took me a while to figure out:
+- AdditionalImportDirs lets our proto file know where to find the prot files
+we're importing
+- ProtoRoot is normally set by default to the parent of the invluded file, but
+this only applies to protos within the project. When referencing proto files
+outside of the project like we are now, we have to set this ourselves.
+
+NOTE: While writing this, I realized that I didn't have to set this for my own
+proto file when referencing from the client project, and based on the docs I
+kinda feel like I should have.
+
+Some excellent documentation here that shows you a lot of what you can do with
+the Protobuf directive in the project file.
+
+[Protocol Buffers/gRPC Codegen Integration Into .NET Build](https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md)
+
+### Import money into your proto file
+You can now import the money type into your own proto file:
+```
+import "google/type/money.proto";
+```
+
+And you can use it to add money fields to your messages:
+```
+message GrpcExampleResponse {
+  string message = 1;
+  google.protobuf.Timestamp modified = 2;
+  google.type.Money amount = 3;
+}
+```
+
+Back in your server implementation, you can set an amount of about three fitty
+like this:
+```
+return await Task.FromResult(new GrpcExampleResponse
+{
+    Message = "yo this is the grpc server",
+    Modified = Timestamp.FromDateTime(DateTime.UtcNow),
+    Amount = new Money
+    {
+        CurrencyCode = "USD",
+        Units = 3,
+        Nanos = 500_000_000
+    }
+}).ConfigureAwait(false);
+```
+
+The basic explanation is that units represent dollars and nanos represent cents,
+with the caveat that it's in nano units, which are 10^-9, so $0.50 would be
+500_000_000 nano units. You'll need to know this in order for the caller to
+convert Money back to decimal.
+
+### Convert from Money back to decimal
+You should now be receiving your shiny new Money amount in your responses. So
+how do we convert it back into a decimal? A little math:
+```
+decimal value = units + nanos / scale factor
+```
+Basically just need to scale the nano units back down to their decimal value,
+then add the whole dollar amount.
+
+Go back to your controller and add a const member:
+```
+private const decimal NanoScaleFactor = 1_000_000_000;
+```
+Be sure to make this type ```decimal``` even though it screams ```int```, so
+our math ends up in the correct type without and casting or anything needed.
+
+Now you can do the math:
+```
+var amount = response.Amount.Units + response.Amount.Nanos / NanoScaleFactor;
+_logger.LogInformation("Amount was about {Amount}", amount.ToString("C", CultureInfo.CreateSpecificCulture("en-US")));
+```
+
+I chose to log it because that was a quicker easier way for me to see it was
+working, you can just look in the docker logs to see the correct amount.
+```
+2022-12-31 21:16:14       Amount was about $3.50
+```
+
+## Closing Thoughts
+Learning the basics of gRPC has been a really difficult process for me for some
+reason. There's a lot of really good documentation out there, but it can be hard
+to find if you don't already know exactly what you're looking for. There's a lot
+of really good examples out there, but they all stop at the absolute minimum
+functionality of sending a string or an integer.
+
+I wrote all this down so I would have something to reference in my own work and
+not forget everything, but I hope this is able to fill a small gap and show how
+to deal with some very common problems that come up soon after the basic
+example.
+
+## Resources
+I found a lot of really good documentation while researching all of this, and
+although I reference it through the docs, I thought it might be helpful to have
+it all in one place also.
+
+### Github
+- [grpc-dotnet](https://github.com/grpc/grpc-dotnet)
+- [Google Well Known Types](https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf)
+- [Google Common Types](https://github.com/googleapis/googleapis/tree/master/google/type)
+- [Decimal Type?](https://github.com/protocolbuffers/protobuf/issues/4406)
+
+### NuGet
+- [Grpc.AspNetCore](https://www.nuget.org/packages/Grpc.AspNetCore/2.50.0#readme-body-tab)
+- [Grpc.Net.ClientFactory](https://www.nuget.org/packages/Grpc.Net.ClientFactory/#readme-body-tab)
+
+### MSDN
+- [gRPC services with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/grpc/aspnetcore?view=aspnetcore-6.0&tabs=visual-studio)
+
+### Google
+- [Google.Protobuf.WellKnownTypes](https://developers.google.com/protocol-buffers/docs/reference/csharp/namespace/google/protobuf/well-known-types)
+- [Protocol Buffers/gRPC Codegen Integration Into .NET Build](https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md)
+
+### Web
+- [C# decimals in gRPC](https://visualrecode.com/blog/csharp-decimals-in-grpc/)
+- [Don't Do It All Yourself: Exploiting gRPC Well Known Types in .NET Core](https://visualstudiomagazine.com/articles/2020/01/16/grpc-well-known-types.aspx)
+- [Reusing and Recycling Data Structures in gRPC Services in .NET Core](https://visualstudiomagazine.com/articles/2020/01/09/grpc-data-structures.aspx)
+
+### Youtube
+- [The Story of Why We Migrate to gRPC and How We Go About It - Matthias Grüter, Spotify](https://youtu.be/fMq3IpPE3TU)
