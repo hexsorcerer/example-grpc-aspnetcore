@@ -405,7 +405,7 @@ The client:
 ```
 
 A couple of important things going on here that took me a while to figure out:
-- AdditionalImportDirs lets our proto file know where to find the prot files
+- AdditionalImportDirs lets our proto file know where to find the proto files
 we're importing
 - ProtoRoot is normally set by default to the parent of the invluded file, but
 this only applies to protos within the project. When referencing proto files
