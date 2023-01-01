@@ -109,6 +109,13 @@ static (int httpPort, int grpcPort) GetDefinedPorts()
 I saw this in the [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/Services/Ordering/Ordering.API/Program.cs)
 project and made use of it here.
 
+### An important note about TLS
+This example does not use https only to keep things simple. It goes without
+saying, but just to avoid any potential confusion, you should not actually
+use gRPC this way in a production environment. I think it's helpful to see
+and understand what controls are available to you and how they work, but it's
+up to you to use them wisely.
+
 NOTE: this is another good time to do a spot check, make sure your projects
 still build and run successfully, and you can hit the controllers on both. If
 you get any errors (you shouldn't), review and fix before continuing.
