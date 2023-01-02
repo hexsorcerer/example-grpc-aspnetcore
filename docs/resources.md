@@ -1,7 +1,4 @@
 ## Resources
-I found a lot of really good documentation while researching all of this, and
-although I reference it through the docs, I thought it might be helpful to have
-it all in one place also.
 
 ### Github
 - [grpc-dotnet](https://github.com/grpc/grpc-dotnet)

@@ -38,7 +38,7 @@ The server:
 ```
 <ItemGroup>
   <Protobuf Include="Proto\example.proto" GrpcServices="Server" AdditionalImportDirs="..\..\..\BuildingBlocks\googleapis" />
-  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" ProtoRoot="..\..\..\BuildingBlocks\googleapis\google\type" />
+  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" />
 </ItemGroup>
 ```
 
@@ -46,25 +46,12 @@ The client:
 ```
 <ItemGroup>
   <Protobuf Include="../GrpcExample.Server/Proto/example.proto" GrpcServices="Client" AdditionalImportDirs="..\..\..\BuildingBlocks\googleapis" />
-  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" ProtoRoot="..\..\..\BuildingBlocks\googleapis\google\type" />
+  <Protobuf Include="..\..\..\BuildingBlocks\googleapis\google\type\money.proto" />
 </ItemGroup>
 ```
 
-A couple of important things going on here that took me a while to figure out:
 - AdditionalImportDirs lets our proto file know where to find the proto files
 we're importing
-- ProtoRoot is normally set by default to the parent of the included file, but
-this only applies to protos within the project. When referencing proto files
-outside of the project like we are now, we have to set this ourselves.
-
-NOTE: While writing this, I realized that I didn't have to set this for my own
-proto file when referencing from the client project, and based on the docs I
-kinda feel like I should have.
-
-Some excellent documentation here that shows you a lot of what you can do with
-the Protobuf directive in the project file.
-
-[Protocol Buffers/gRPC Codegen Integration Into .NET Build](https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md)
 
 ### Import money into your proto file
 You can now import the money type into your own proto file:
@@ -110,7 +97,7 @@ return await Task.FromResult(new GrpcExampleResponse
 ```
 
 The basic explanation is that units represent dollars and nanos represent cents,
-with the caveat that it's in nano units, which are 10^-9, so $0.50 would be
+with the caveat that it's in nano units, which are 10^9, so $0.50 would be
 500_000_000 nano units. You'll need to know this in order for the caller to
 convert Money back to decimal.
 
